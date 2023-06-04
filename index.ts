@@ -2,7 +2,7 @@ import { getInputFromFile } from './utils/getInputFromFile'
 import { totalFromArray } from './utils/totalFromArray'
 const lines: string[] = []
 try {
-  const response = getInputFromFile('./day1Input.txt')
+  const response = getInputFromFile('./inputfiles/day1Input.txt')
   if (response instanceof Error) {
   } else {
     lines.push(...response)
