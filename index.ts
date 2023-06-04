@@ -6,6 +6,7 @@ import {
   calculateFinalScore,
   calculateFinalScoreFromGameResults,
 } from './solutions/day2Solution'
+import { sumBadgePriorities, sumPriorities } from './solutions/day3Solution'
 
 console.log('Day 1 Solution:')
 console.log('Part 1:', findHighestCalorieTotal())
@@ -16,3 +17,9 @@ console.log('')
 console.log('Day 2 Solution:')
 console.log('Part 1:', calculateFinalScore())
 console.log('Part 2:', calculateFinalScoreFromGameResults())
+
+console.log('')
+
+console.log('Day 3 Solution:')
+console.log('Part 1:', sumPriorities())
+console.log('Part 2:', sumBadgePriorities())
