@@ -14,6 +14,7 @@ const elves: string[][] = []
 let cache: string[] = []
 for (let i = 0; i < lines.length; i++) {
   const line = lines[i]
+
   if (line === '') {
     elves.push(cache)
     cache = []

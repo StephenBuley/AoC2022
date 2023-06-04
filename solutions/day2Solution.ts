@@ -41,7 +41,7 @@ function determineScore(player1: string, player2: string) {
       return 0
     }
   } else if (player1 === 'B') {
-    // opponenet chose Paper
+    // opponenet chose paper
     if (player2 === 'X') {
       // I chose Rock
       return 0

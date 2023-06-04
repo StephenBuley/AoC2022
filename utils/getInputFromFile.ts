@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+// type for function return
 type ReadFileResponse = Error | string[]
 export function getInputFromFile(filename: string): ReadFileResponse {
   try {
