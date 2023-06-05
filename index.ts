@@ -7,7 +7,10 @@ import {
   calculateFinalScoreFromGameResults,
 } from './solutions/day2Solution'
 import { sumBadgePriorities, sumPriorities } from './solutions/day3Solution'
-import { findCompleteOverlaps } from './solutions/day4Solution'
+import {
+  findCompleteOverlaps,
+  findPartialOverlaps,
+} from './solutions/day4Solution'
 
 console.log('Day 1 Solution:')
 console.log('Part 1:', findHighestCalorieTotal())
@@ -28,3 +31,4 @@ console.log('Part 2:', sumBadgePriorities())
 console.log('')
 console.log('Day 4 Solution:')
 console.log('Part 1:', findCompleteOverlaps())
+console.log('Part 2:', findPartialOverlaps())
