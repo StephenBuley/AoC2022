@@ -13,18 +13,20 @@ try {
   console.error(error)
 }
 
-export function findMarker() {
+export function findMarker(markerLength: number) {
   let foundIndex = 0
-  for (let i = 3; i < input.length; i++) {
+  for (let i = markerLength - 1; i < input.length; i++) {
+    // - 1 is for index off by one
     const found: Record<string, number> = {}
-    for (let j = i - 3; j <= i; j++) {
+    for (let j = i - (markerLength - 1); j <= i; j++) {
+      // off by one again
       if (!found[input[j]]) {
         found[input[j]] = 1
       }
     }
-    if (Object.entries(found).length == 4) {
-      console.log(found)
-      foundIndex = i + 1
+    if (Object.entries(found).length == markerLength) {
+      // if the object has the markerLength in it, each one was unique
+      foundIndex = i + 1 // fixing our off by one error once more
       break
     }
   }

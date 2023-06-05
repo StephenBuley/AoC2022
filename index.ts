@@ -45,5 +45,5 @@ console.log('Part 2:', findTopOfEachStackAgain())
 
 console.log('')
 console.log('Day 6 Solution:')
-console.log('Part 1:', findMarker())
-console.log('Part 2:')
+console.log('Part 1:', findMarker(4))
+console.log('Part 2:', findMarker(14))
