@@ -15,6 +15,7 @@ import {
   findTopOfEachStack,
   findTopOfEachStackAgain,
 } from './solutions/day5Solution'
+import { findMarker } from './solutions/day6Solution'
 
 console.log('Day 1 Solution:')
 console.log('Part 1:', findHighestCalorieTotal())
@@ -41,3 +42,8 @@ console.log('')
 console.log('Day 5 Solution:')
 console.log('Part 1:', findTopOfEachStack())
 console.log('Part 2:', findTopOfEachStackAgain())
+
+console.log('')
+console.log('Day 6 Solution:')
+console.log('Part 1:', findMarker())
+console.log('Part 2:')
