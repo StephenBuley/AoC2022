@@ -88,3 +88,45 @@ export function findTopOfEachStack() {
 
   return result
 }
+
+export function findTopOfEachStackAgain() {
+  // populate stacks
+  const stacks: Stack[] = []
+  for (let i = 1; i <= numOfStacks; i++) {
+    stacks.push(new Stack(i))
+  }
+
+  for (const stack of stacks) {
+    // if x is stack number, then 4x - 3 = index of stack
+    const stackIndex = 4 * stack.stackNumber - 3
+    for (const init of initialStacks) {
+      if (init[stackIndex] !== ' ') stack.push(init[stackIndex])
+    }
+  }
+
+  // follow instructions
+  for (const instruction of instructions) {
+    const oldStack = stacks.find(
+      (one) => one.stackNumber === instruction.fromStack,
+    )
+    const newStack = stacks.find(
+      (one) => one.stackNumber === instruction.toStack,
+    )
+    const temp: Stack = new Stack(0)
+    for (let i = 1; i <= instruction.numToMove; i++) {
+      temp.stack.push(oldStack!.pop())
+    }
+    for (let i = temp.stack.length - 1; i >= 0; i--) {
+      newStack!.push(temp.stack[i])
+    }
+  }
+
+  // get top from each stack
+  let result: string = ''
+
+  for (const stack of stacks) {
+    result += stack.stack[stack.stack.length - 1]
+  }
+
+  return result
+}
