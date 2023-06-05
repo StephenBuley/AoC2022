@@ -11,6 +11,7 @@ import {
   findCompleteOverlaps,
   findPartialOverlaps,
 } from './solutions/day4Solution'
+import { findTopOfEachStack } from './solutions/day5Solution'
 
 console.log('Day 1 Solution:')
 console.log('Part 1:', findHighestCalorieTotal())
@@ -32,3 +33,8 @@ console.log('')
 console.log('Day 4 Solution:')
 console.log('Part 1:', findCompleteOverlaps())
 console.log('Part 2:', findPartialOverlaps())
+
+console.log('')
+console.log('Day 5 Solution:')
+console.log('Part 1:', findTopOfEachStack())
+console.log('Part 2:')
