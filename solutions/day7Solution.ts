@@ -6,6 +6,7 @@ try {
   const lines = getInputFromFile('./inputfiles/day7Input.txt')
 
   if (lines instanceof Error) {
+    throw new Error('something bad happened')
   } else {
     instructions.push(...lines)
   }
@@ -13,9 +14,9 @@ try {
   console.error(error)
 }
 
-class File {
+class Node {
+  size: number | undefined
   name: string
-  size?: number
 
   constructor(name: string, size?: number) {
     this.name = name
@@ -23,49 +24,41 @@ class File {
   }
 }
 
-class Directory extends File {
-  children: File[] = []
-  parent?: Directory
-  name!: string
-  size?: number
+class Directory extends Node {
+  children: Node[] = []
 
-  constructor(name: string, parent?: Directory, size?: number) {
+  constructor(name: string, size?: number) {
     super(name, size)
-    this.parent = parent
   }
+}
 
-  addChild(newFile: File) {
-    this.children.push(newFile)
+class File extends Node {
+  constructor(name: string, size?: number) {
+    super(name, size)
   }
 }
 
 export function findDirectories() {
-  const rootDirectory = new Directory('/', undefined)
-  let currentDirectory = rootDirectory // this is your problem - modifying the original root directory you goof
-
-  // map out all directories
-  for (const instruction of instructions) {
-    const line = instruction.split(' ')
-    if (line[0] === '$') {
-      if (line[1] === 'cd') {
-        currentDirectory = changeDirectory(line[2], currentDirectory)
+  const directories = createDirectories(instructions)
+  let currentDirectory = '/'
+  for (const line of instructions) {
+    const instruction = line.split(' ')
+    if (instruction[0] === '$') {
+      if (instruction[1] === 'cd') {
+        currentDirectory = instruction[2]
       }
-    } else if (line[0] === 'dir') {
-      currentDirectory.addChild(new Directory(line[1], currentDirectory))
-      console.log(currentDirectory)
-    } else {
-      currentDirectory.addChild(new File(line[1], parseInt(line[0])))
     }
   }
 }
 
-function changeDirectory(toDir: string, currentDir: Directory) {
-  if (toDir === '..') {
-    return currentDir.parent || currentDir
-  } else {
-    const foundDir = currentDir.children.find((child) => child.name === toDir)
-    return foundDir instanceof Directory
-      ? foundDir
-      : new Directory(toDir, currentDir)
+function createDirectories(instructions: string[]) {
+  const directories: Directory[] = []
+  for (const line of instructions) {
+    const instruction = line.split(' ')
+    if (instruction[0] === 'dir') {
+      const newDir = new Directory(instruction[1])
+      directories.push(newDir)
+    }
   }
+  return directories
 }
