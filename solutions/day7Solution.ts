@@ -32,23 +32,45 @@ class File extends Node {
 
 class Directory extends Node {
   children: Node[] = []
+  parent: Directory | null
+  index: number
 
-  constructor(name: string, size?: number) {
+  constructor(
+    name: string,
+    index: number,
+    parent: Directory | null,
+    size?: number,
+  ) {
     super(name, size)
+    this.parent = parent
+    this.index = index
   }
+
+  addChild(node: Node) {}
 }
 
 export function findDirectories() {
-  let currentDirName = '/'
-  const directories: Directory[] = [new Directory('/')]
+  const directories: Directory[] = [new Directory('/', 0, null)]
   const files: File[] = []
+  let currentDirectoryIndex = 0
   for (const line of instructions) {
     const word = line.split(' ')
-    const currentDir = directories.find((dir) => dir.name === currentDirName)
-    if (word[1] === 'cd' && word[2] !== '..') {
-      currentDirName = word[2]
+    if (word[1] === 'cd') {
+      if (word[2] === '..') {
+        currentDirectoryIndex = directories.find(
+          (dir) => dir === directories[currentDirectoryIndex].parent,
+        )!.index
+      } else {
+        const curr = directories[currentDirectoryIndex]
+        for (const child of curr.children) {
+        }
+      }
     } else if (word[0] === 'dir') {
-      const newDir = new Directory(word[1])
+      const newDir = new Directory(
+        word[1],
+        directories.length,
+        directories[currentDirectoryIndex],
+      )
       currentDir?.children.push(newDir)
       directories.push(newDir)
     } else if (word[0] !== '$') {
