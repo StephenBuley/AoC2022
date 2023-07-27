@@ -33,61 +33,59 @@ class File extends Node {
 class Directory extends Node {
   children: Node[] = []
   parent: Directory | null
-  index: number
 
-  constructor(
-    name: string,
-    index: number,
-    parent: Directory | null,
-    size?: number,
-  ) {
+  constructor(name: string, parent: Directory | null, size?: number) {
     super(name, size)
     this.parent = parent
-    this.index = index
   }
 
-  addChild(node: Node) {}
+  addChild(name: string, type: 'directory' | 'file', size?: number) {
+    let newContent
+    if (type === 'file') {
+      newContent = new File(name, size)
+    } else if (type === 'directory') {
+      newContent = new Directory(name, this)
+    }
+    this.children.push(newContent!)
+    return newContent!
+  }
+}
+
+function isDirectory(node: Node): node is Directory {
+  return node instanceof Directory
 }
 
 export function findDirectories() {
-  const directories: Directory[] = [new Directory('/', 0, null)]
-  const files: File[] = []
-  let currentDirectoryIndex = 0
+  const root = new Directory('/', null)
+  let currentDirectory = root
+  const directories = [root]
   for (const line of instructions) {
     const word = line.split(' ')
     if (word[1] === 'cd') {
       if (word[2] === '..') {
-        currentDirectoryIndex = directories.find(
-          (dir) => dir === directories[currentDirectoryIndex].parent,
-        )!.index
+        currentDirectory = currentDirectory.parent!
       } else {
-        const curr = directories[currentDirectoryIndex]
-        for (const child of curr.children) {
-        }
+        const currentChildren: Directory[] =
+          currentDirectory.children.filter(isDirectory)
+        currentDirectory =
+          currentChildren.find((dir) => dir.name === word[2]) ||
+          currentDirectory
       }
     } else if (word[0] === 'dir') {
-      const newDir = new Directory(
-        word[1],
-        directories.length,
-        directories[currentDirectoryIndex],
-      )
-      currentDir?.children.push(newDir)
-      directories.push(newDir)
+      const newDir = currentDirectory.addChild(word[1], 'directory')
+      if (isDirectory(newDir)) {
+        directories.push(newDir)
+      }
     } else if (word[0] !== '$') {
-      const newFile = new File(word[1], parseInt(word[0]))
-      currentDir?.children.push(newFile)
-      files.push(newFile)
+      currentDirectory.addChild(word[1], 'file', parseInt(word[0]))
     }
   }
 
-  getDirectorySize(directories[0])
-
   let sum = 0
   for (const dir of directories) {
-    console.log(dir.size)
-    if (dir.size && dir.size <= 100000) {
-      console.log('BANG!')
-      sum += dir.size
+    const size = getDirectorySize(dir)
+    if (size <= 100000) {
+      sum += size
     }
   }
   return sum
