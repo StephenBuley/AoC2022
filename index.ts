@@ -16,7 +16,10 @@ import {
   findTopOfEachStackAgain,
 } from './solutions/day5Solution'
 import { findMarker } from './solutions/day6Solution'
-import { findDirectories } from './solutions/day7Solution'
+import {
+  findDirectories,
+  findDirectoryToDelete,
+} from './solutions/day7Solution'
 
 console.log('Day 1 Solution:')
 console.log('Part 1:', findHighestCalorieTotal())
@@ -52,3 +55,4 @@ console.log('Part 2:', findMarker(14))
 console.log('')
 console.log('Day 7 Solution:')
 console.log('Part 1:', findDirectories())
+console.log('Part 2:', findDirectoryToDelete())

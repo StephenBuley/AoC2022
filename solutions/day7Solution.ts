@@ -55,7 +55,7 @@ function isDirectory(node: Node): node is Directory {
   return node instanceof Directory
 }
 
-export function findDirectories() {
+function generateFileSystem() {
   const root = new Directory('/', null)
   let currentDirectory = root
   const directories = [root]
@@ -80,6 +80,11 @@ export function findDirectories() {
       currentDirectory.addChild(word[1], 'file', parseInt(word[0]))
     }
   }
+  return directories
+}
+
+export function findDirectories() {
+  const directories = generateFileSystem()
 
   let sum = 0
   for (const dir of directories) {
@@ -89,6 +94,20 @@ export function findDirectories() {
     }
   }
   return sum
+}
+
+export function findDirectoryToDelete() {
+  const directories = generateFileSystem()
+
+  const totalSize = getDirectorySize(directories[0])
+  const remainingSpace = 70000000 - totalSize
+  const minimumSize = 30000000 - remainingSpace
+
+  const eligibleDirectories = directories.filter(
+    (dir) => dir.size && dir.size >= minimumSize,
+  )
+  eligibleDirectories.sort((dir1, dir2) => dir1.size! - dir2.size!)
+  return eligibleDirectories[0].size!
 }
 
 function getDirectorySize(directory: Directory) {
@@ -119,19 +138,3 @@ function getDirectorySize(directory: Directory) {
   directory.size = totalSize
   return totalSize
 }
-
-/*
-
-I want the program to look at each directory, adding up the directory size as it goes.
-
-For example, look at the outermost directory. 
-
-The outermost directory has two directories and two files in it. 
-
-To find the size of the outermost directory, we have to go into the other directories. 
-
-We need to first traverse the tree and determine what the children of each directory are
-
-
-
-*/
