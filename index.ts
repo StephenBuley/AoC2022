@@ -56,3 +56,7 @@ console.log('')
 console.log('Day 7 Solution:')
 console.log('Part 1:', findDirectories())
 console.log('Part 2:', findDirectoryToDelete())
+
+console.log('')
+console.log('Day 8 Solution:')
+console.log('Part 1:')
