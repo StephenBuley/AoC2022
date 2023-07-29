@@ -20,7 +20,10 @@ import {
   findDirectories,
   findDirectoryToDelete,
 } from './solutions/day7Solution'
-import { numVisibleTrees } from './solutions/day8Solution'
+import {
+  calculateScenicScores,
+  numVisibleTrees,
+} from './solutions/day8Solution'
 
 console.log('Day 1 Solution:')
 console.log('Part 1:', findHighestCalorieTotal())
@@ -61,3 +64,4 @@ console.log('Part 2:', findDirectoryToDelete())
 console.log('')
 console.log('Day 8 Solution:')
 console.log('Part 1:', numVisibleTrees())
+console.log('Part 2:', calculateScenicScores())

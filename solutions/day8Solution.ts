@@ -19,7 +19,7 @@ class Tree {
   isVisibleFromSouth: boolean = true
   isVisibleFromNorth: boolean = true
   isVisibleFromEast: boolean = true
-
+  isOnEdge: boolean = false
   posX: number
   posY: number
   height: number
@@ -32,7 +32,6 @@ class Tree {
 
 export function numVisibleTrees() {
   const trees: Tree[] = generateForest(rows)
-  console.log(trees.slice(90, 100))
   for (let i = 1; i < rows.length - 1; i++) {
     for (let j = 1; j < rows[0].length - 1; j++) {
       const currentTree = trees.find(
@@ -48,6 +47,128 @@ export function numVisibleTrees() {
     }
   }
   return sum
+}
+
+export function calculateScenicScores() {
+  const trees: Tree[] = generateForest(rows)
+  findEdges(trees)
+  const scenicScores = trees.map((tree) => {
+    if (tree.isOnEdge) return 0
+    return (
+      getNorthScore(trees, tree) *
+      getSouthScore(trees, tree) *
+      getEastScore(trees, tree) *
+      getWestScore(trees, tree)
+    )
+  })
+  return Math.max(...scenicScores)
+}
+
+function getNorthScore(trees: Tree[], currentTree: Tree) {
+  let i = 1
+  let score = 1
+  let treeToCheck = trees.find(
+    (tree) =>
+      tree.posX === currentTree.posX && tree.posY === currentTree.posY - 1,
+  )
+  while (treeToCheck && !treeToCheck.isOnEdge) {
+    if (treeToCheck.height < currentTree.height) {
+      score++
+      i++
+      treeToCheck = trees.find(
+        (tree) =>
+          tree.posX === currentTree.posX && tree.posY === currentTree.posY - i,
+      )
+    } else {
+      break
+    }
+  }
+  return score
+}
+function getSouthScore(trees: Tree[], currentTree: Tree) {
+  let i = 1
+  let score = 1
+  let treeToCheck = trees.find(
+    (tree) =>
+      tree.posX === currentTree.posX && tree.posY === currentTree.posY + 1,
+  )
+  while (treeToCheck && !treeToCheck.isOnEdge) {
+    if (treeToCheck.height < currentTree.height) {
+      score++
+      i++
+      treeToCheck = trees.find(
+        (tree) =>
+          tree.posX === currentTree.posX && tree.posY === currentTree.posY + i,
+      )
+    } else {
+      break
+    }
+  }
+  return score
+}
+function getEastScore(trees: Tree[], currentTree: Tree) {
+  let i = 1
+  let score = 1
+  let treeToCheck = trees.find(
+    (tree) =>
+      tree.posX === currentTree.posX - 1 && tree.posY === currentTree.posY,
+  )
+  while (treeToCheck && !treeToCheck.isOnEdge) {
+    if (treeToCheck.height < currentTree.height) {
+      score++
+      i++
+      treeToCheck = trees.find(
+        (tree) =>
+          tree.posX === currentTree.posX - i && tree.posY === currentTree.posY,
+      )
+    } else {
+      break
+    }
+  }
+  return score
+}
+function getWestScore(trees: Tree[], currentTree: Tree) {
+  let i = 1
+  let score = 1
+  let treeToCheck = trees.find(
+    (tree) =>
+      tree.posX === currentTree.posX + 1 && tree.posY === currentTree.posY,
+  )
+  while (treeToCheck && !treeToCheck.isOnEdge) {
+    if (treeToCheck.height < currentTree.height) {
+      score++
+      i++
+      treeToCheck = trees.find(
+        (tree) =>
+          tree.posX === currentTree.posX + i && tree.posY === currentTree.posY,
+      )
+    } else {
+      break
+    }
+  }
+  return score
+}
+
+function findEdges(trees: Tree[]) {
+  for (let i = 0; i < rows[0].length; i++) {
+    const topRowTree = trees.find((tree) => tree.posX === i && tree.posY === 0)
+    const bottomRowTree = trees.find(
+      (tree) => tree.posX === i && tree.posY === rows.length - 1,
+    )
+    topRowTree!.isOnEdge = true
+    bottomRowTree!.isOnEdge = true
+  }
+
+  for (let i = 0; i < rows.length; i++) {
+    const leftSideTree = trees.find(
+      (tree) => tree.posX === 0 && tree.posY === i,
+    )
+    const rightSideTree = trees.find(
+      (tree) => tree.posX === rows[0].length - 1 && tree.posY === i,
+    )
+    leftSideTree!.isOnEdge = true
+    rightSideTree!.isOnEdge = true
+  }
 }
 
 function generateForest(input: string[]) {
