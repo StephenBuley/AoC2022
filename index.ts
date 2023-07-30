@@ -24,6 +24,7 @@ import {
   calculateScenicScores,
   numVisibleTrees,
 } from './solutions/day8Solution'
+import { findTailPositions } from './solutions/day9Solution'
 
 console.log('Day 1 Solution:')
 console.log('Part 1:', findHighestCalorieTotal())
@@ -65,3 +66,7 @@ console.log('')
 console.log('Day 8 Solution:')
 console.log('Part 1:', numVisibleTrees())
 console.log('Part 2:', calculateScenicScores())
+
+console.log('')
+console.log('Day 9 Solution:')
+console.log('Part 1:', findTailPositions())
