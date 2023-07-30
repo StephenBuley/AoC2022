@@ -69,4 +69,5 @@ console.log('Part 2:', calculateScenicScores())
 
 console.log('')
 console.log('Day 9 Solution:')
-console.log('Part 1:', findTailPositions())
+console.log('Part 1:', findTailPositions(2))
+console.log('Part 2:', findTailPositions(10))
