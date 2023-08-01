@@ -1,4 +1,4 @@
-import { findSignalStrength } from './solutions/day10Solution'
+import { findSignalStrength, renderMessage } from './solutions/day10Solution'
 import {
   findHighestCalorieTotal,
   findHighestThreeCalorieTotal,
@@ -76,3 +76,4 @@ console.log('Part 2:', findTailPositions(10))
 console.log('')
 console.log('Day 10 Solution:')
 console.log('Part 1:', findSignalStrength())
+console.log('Part 2:', renderMessage())
