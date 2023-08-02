@@ -65,12 +65,16 @@ class Monkey {
   }
 }
 
-export function determineMonkeyBusiness() {
+export function determineMonkeyBusiness(iterations: number) {
   const monkeys: Monkey[] = parseInstructions()
-  for (let i = 0; i < 20; i++) {
+  let lcm = 1
+  for (const monkey of monkeys) {
+    lcm *= monkey.test
+  }
+  for (let i = 0; i < iterations; i++) {
     for (const monkey of monkeys) {
       for (const [i, item] of monkey.items.entries()) {
-        monkey.items[i] = monkey.inspect(item)
+        monkey.items[i] = monkey.inspect(item) % lcm
       }
       for (let i = 0; i < monkey.items.length; i++) {
         monkey.throw(monkey.items[i], monkeys)
@@ -78,13 +82,12 @@ export function determineMonkeyBusiness() {
       monkey.items = []
     }
   }
-
   monkeys.sort((a, b) => b.inspections - a.inspections)
   return monkeys[0].inspections * monkeys[1].inspections
 }
 
 function beRelievedAbout(item: number) {
-  return Math.floor(item / 3)
+  return Math.floor(item)
 }
 
 function parseInstructions() {

@@ -81,4 +81,5 @@ console.log('Part 2:', renderMessage())
 
 console.log('')
 console.log('Day 11 Solution:')
-console.log('Part 1:', determineMonkeyBusiness())
+console.log('Part 1:', determineMonkeyBusiness(20))
+console.log('Part 2:', determineMonkeyBusiness(10000))
