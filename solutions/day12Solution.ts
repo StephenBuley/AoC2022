@@ -47,8 +47,34 @@ export function findShortestDistance() {
       unvisited.push(newNode)
     }
   }
-  const startNode = unvisited.find((node) => node.isStart)
-  const endNode = unvisited.find((node) => node.isEnd)
+  const startNode = unvisited.find((node) => node.isStart)!
+  const endNode = unvisited.find((node) => node.isEnd)!
+  startNode.distance = 0
+  /* 
+  while (endNode.visited === false) {
+    unvisited.sort((a, b) => a.distance - b.distance)
+    const currentNode = unvisited[0]
+    
+    for (all nodes connected to current node) {
+      if (nodeToCheck.height <= currentNode.height + 1) {
+        // we can go to this node, calculate distance
+        const newDistance = currentNode.distance + 1
+        nodeToCheck.distance = Math.min(newDistance, nodeToCheck.distance)
+      }
+
+    }
+    // after all connected nodes have been checked
+    currentNode.visted = true
+    delete currentNode from unvisited
+    
+  
+  }
+
+  return endNode.distance
+  */
+
+  console.log(startNode)
+  console.log(endNode)
 }
 
 // HELPER FUNCTIONS
