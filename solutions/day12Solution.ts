@@ -3,7 +3,7 @@ import { getInputFromFile } from '../utils/getInputFromFile'
 const rows: string[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day12ExampleInput.txt')
+  const lines = getInputFromFile('./inputfiles/day12Input.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -49,54 +49,56 @@ export function findShortestDistance() {
     }
   }
   for (const node of unvisited) {
-    // for every node, populate neighbors
-    for (
-      let i = Math.max(0, node.x - 1);
-      i < Math.min(rows.length, node.x + 1);
-      i++
-    ) {
-      for (
-        let j = Math.max(0, node.y - 1);
-        j < Math.min(rows[i].length, node.y + 1);
-        j++
-      ) {
-        node.neighbors.push(
-          unvisited.find((neighbor) => neighbor.x === i && neighbor.y === j)!,
-        )
-      }
-    }
+    // go through and populate neighbors for each node
+    findNeighbors(node, unvisited)
   }
   const startNode = unvisited.find((node) => node.isStart)!
   const endNode = unvisited.find((node) => node.isEnd)!
   startNode.distance = 0
-  /* 
+  let currentNode = startNode
   while (endNode.visited === false) {
-    unvisited.sort((a, b) => b.distance - a.distance)
-    const currentNode = unvisited[0]
-    
-    for (all nodes connected to current node) {
-      if (nodeToCheck.height <= currentNode.height + 1) {
-        // we can go to this node, calculate distance
-        const newDistance = currentNode.distance + 1
-        nodeToCheck.distance = Math.min(newDistance, nodeToCheck.distance)
+    for (const nodeToCheck of currentNode.neighbors) {
+      if (!nodeToCheck.visited) {
+        if (nodeToCheck.height <= currentNode.height + 1) {
+          // we can go to this node, calculate distance
+          const newDistance = currentNode.distance + 1
+          nodeToCheck.distance = Math.min(newDistance, nodeToCheck.distance)
+        }
       }
-
     }
-    // after all connected nodes have been checked
-    currentNode.visted = true
-    delete currentNode from unvisited
-    
-  
+    currentNode.visited = true
+    const deleteIndex = unvisited.indexOf(currentNode)
+    unvisited.splice(deleteIndex, 1)
+    unvisited.sort((a, b) => a.distance - b.distance)
+    currentNode = unvisited[0]
   }
 
   return endNode.distance
-  */
 
   console.log(startNode)
   console.log(endNode)
 }
 
 // HELPER FUNCTIONS
+
+function findNeighbors(node: Node, arr: Node[]) {
+  const east = arr.find(
+    (neighbor) => neighbor.x === node.x + 1 && neighbor.y === node.y,
+  )
+  const west = arr.find(
+    (neighbor) => neighbor.x === node.x - 1 && neighbor.y === node.y,
+  )
+  const south = arr.find(
+    (neighbor) => neighbor.x === node.x && neighbor.y === node.y - 1,
+  )
+  const north = arr.find(
+    (neighbor) => neighbor.x === node.x && neighbor.y === node.y + 1,
+  )
+  east && node.neighbors.push(east)
+  west && node.neighbors.push(west)
+  south && node.neighbors.push(south)
+  north && node.neighbors.push(north)
+}
 
 function generateNewNode(i: number, j: number) {
   const char = rows[i][j]
