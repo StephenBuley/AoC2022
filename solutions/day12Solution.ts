@@ -22,6 +22,7 @@ class Node {
   height: number
   distance: number = Infinity
   visited: boolean = false
+  neighbors: Node[] = []
 
   constructor(
     x: number,
@@ -47,12 +48,30 @@ export function findShortestDistance() {
       unvisited.push(newNode)
     }
   }
+  for (const node of unvisited) {
+    // for every node, populate neighbors
+    for (
+      let i = Math.max(0, node.x - 1);
+      i < Math.min(rows.length, node.x + 1);
+      i++
+    ) {
+      for (
+        let j = Math.max(0, node.y - 1);
+        j < Math.min(rows[i].length, node.y + 1);
+        j++
+      ) {
+        node.neighbors.push(
+          unvisited.find((neighbor) => neighbor.x === i && neighbor.y === j)!,
+        )
+      }
+    }
+  }
   const startNode = unvisited.find((node) => node.isStart)!
   const endNode = unvisited.find((node) => node.isEnd)!
   startNode.distance = 0
   /* 
   while (endNode.visited === false) {
-    unvisited.sort((a, b) => a.distance - b.distance)
+    unvisited.sort((a, b) => b.distance - a.distance)
     const currentNode = unvisited[0]
     
     for (all nodes connected to current node) {
