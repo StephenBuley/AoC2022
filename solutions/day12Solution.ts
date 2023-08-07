@@ -41,19 +41,49 @@ class Node {
 
 export function findShortestDistance() {
   // set up
-  const unvisited: Node[] = []
-  for (let i = 0; i < rows.length; i++) {
-    for (let j = 0; j < rows[i].length; j++) {
-      const newNode = generateNewNode(i, j)
-      unvisited.push(newNode)
-    }
-  }
+  const unvisited: Node[] = createNodes()
   for (const node of unvisited) {
     // go through and populate neighbors for each node
     findNeighbors(node, unvisited)
   }
   const startNode = unvisited.find((node) => node.isStart)!
   const endNode = unvisited.find((node) => node.isEnd)!
+  return runAlgorithm(unvisited, startNode, endNode)
+}
+
+export function findNiceHikingPath() {
+  // set up
+  const unvisited: Node[] = createNodes()
+  for (const node of unvisited) {
+    // go through and populate neighbors for each node
+    findNeighbors(node, unvisited)
+  }
+  const startNode = unvisited.find((node) => node.isEnd)!
+  const endNode = unvisited.find((node) => node.isStart)!
+  startNode.distance = 0
+  let currentNode = startNode
+  while (endNode.visited === false) {
+    for (const nodeToCheck of currentNode.neighbors) {
+      if (!nodeToCheck.visited) {
+        if (nodeToCheck.height >= currentNode.height - 1) {
+          // we can go to this node, calculate distance
+          const newDistance = currentNode.distance + 1
+          nodeToCheck.distance = Math.min(newDistance, nodeToCheck.distance)
+        }
+      }
+    }
+    currentNode.visited = true
+    if (currentNode.height === 'a'.charCodeAt(0)) return currentNode.distance
+    const deleteIndex = unvisited.indexOf(currentNode)
+    unvisited.splice(deleteIndex, 1)
+    unvisited.sort((a, b) => a.distance - b.distance)
+    currentNode = unvisited[0]
+  }
+}
+
+// HELPER FUNCTIONS
+
+function runAlgorithm(unvisited: Node[], startNode: Node, endNode: Node) {
   startNode.distance = 0
   let currentNode = startNode
   while (endNode.visited === false) {
@@ -74,12 +104,19 @@ export function findShortestDistance() {
   }
 
   return endNode.distance
-
-  console.log(startNode)
-  console.log(endNode)
 }
 
-// HELPER FUNCTIONS
+function createNodes() {
+  const unvisited: Node[] = []
+  for (let i = 0; i < rows.length; i++) {
+    for (let j = 0; j < rows[i].length; j++) {
+      const newNode = generateNewNode(i, j)
+      unvisited.push(newNode)
+    }
+  }
+
+  return unvisited
+}
 
 function findNeighbors(node: Node, arr: Node[]) {
   const east = arr.find(

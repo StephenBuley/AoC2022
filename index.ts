@@ -1,6 +1,9 @@
 import { findSignalStrength, renderMessage } from './solutions/day10Solution'
 import { determineMonkeyBusiness } from './solutions/day11Solution'
-import { findShortestDistance } from './solutions/day12Solution'
+import {
+  findNiceHikingPath,
+  findShortestDistance,
+} from './solutions/day12Solution'
 import {
   findHighestCalorieTotal,
   findHighestThreeCalorieTotal,
@@ -88,3 +91,4 @@ console.log('Part 2:', determineMonkeyBusiness(10000))
 console.log('')
 console.log('Day 12 Solution:')
 console.log('Part 1:', findShortestDistance())
+console.log('Part 2:', findNiceHikingPath())
