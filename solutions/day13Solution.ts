@@ -7,7 +7,7 @@ type Result = 'correct' | 'incorrect' | 'next'
 const input: Packet[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day13ExampleInput.txt')
+  const lines = getInputFromFile('./inputfiles/day13Input.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -39,14 +39,33 @@ export function sumCorrectlySentPacketIndices() {
 }
 
 export function findDecoderKey() {
-  const newInput = structuredClone(input)
+  const newInput = structuredClone(input).filter((_, index) => index % 3 !== 2)
+  newInput.push([[2]], [[6]])
+
   newInput.sort((a, b) => {
     const result = compare(a, b)
     if (result === 'correct') return -1
     else return 1
   })
   // this doesn't work because I am mutating everything... wop wop wahhhhh ok I'll come back later
-  console.log(newInput)
+  const index1 = findNestedArray(2, newInput) + 1
+  const index2 = findNestedArray(6, newInput) + 1
+  return index1 * index2
+}
+
+function findNestedArray(val: number, arr: Packet[]) {
+  return arr.findIndex((value) => {
+    if (
+      typeof value === 'object' &&
+      value.length === 1 &&
+      typeof value[0] === 'object' &&
+      value.length === 1 &&
+      value[0][0] === val
+    ) {
+      return true
+    }
+    return false
+  })
 }
 
 function compare(left: Packet, right: Packet): Result {
@@ -75,15 +94,17 @@ function compareTwoIntegers(left: number, right: number): Result {
 
 function compareTwoLists(left: Packet[], right: Packet[]): Result {
   let result: Result = 'next'
-  while (left.length > 0 && right.length > 0 && result === 'next') {
-    const leftChild = left.shift()!
-    const rightChild = right.shift()!
+  const newLeft = structuredClone(left)
+  const newRight = structuredClone(right)
+  while (newLeft.length > 0 && newRight.length > 0 && result === 'next') {
+    const leftChild = newLeft.shift()!
+    const rightChild = newRight.shift()!
     result = compare(leftChild, rightChild)
   }
   if (result === 'next') {
-    if (left.length === 0 && right.length > 0) {
+    if (newLeft.length === 0 && newRight.length > 0) {
       return 'correct'
-    } else if (right.length === 0 && left.length > 0) {
+    } else if (newRight.length === 0 && newLeft.length > 0) {
       return 'incorrect'
     } else {
       return result
