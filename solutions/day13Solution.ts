@@ -2,17 +2,12 @@ import { getInputFromFile } from '../utils/getInputFromFile'
 
 type Packet = number | (number | Packet)[]
 
-type Pair = {
-  left: Packet
-  right: Packet
-}
-
-const pairs: Pair[] = []
+type Result = 'correct' | 'incorrect' | 'next'
 
 const input: Packet[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day13ExampleInput.txt')
+  const lines = getInputFromFile('./inputfiles/day13Input.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -27,5 +22,60 @@ try {
 }
 
 export function sumCorrectlySentPacketIndices() {
-  const packet = input[0]
+  const results: Result[] = []
+  while (input.length > 0) {
+    const left = input.shift()!
+    const right = input.shift()!
+    input.shift() // get rid of empty array line
+    results.push(compare(left, right))
+  }
+  return results.reduce(
+    // sum up indicies that are correct
+    (acc, val, i) => (val === 'correct' ? acc + i + 1 : acc + 0),
+    0,
+  )
+}
+
+function compare(left: Packet, right: Packet): Result {
+  let result: Result = 'next'
+  if (typeof left === 'number' && typeof right === 'number') {
+    result = compareTwoIntegers(left, right)
+  } else if (typeof left === 'object' && typeof right === 'object') {
+    result = compareTwoLists(left, right)
+  } else if (typeof left === 'number' && typeof right === 'object') {
+    result = compareTwoLists([left], right)
+  } else if (typeof left === 'object' && typeof right === 'number') {
+    result = compareTwoLists(left, [right])
+  }
+  return result
+}
+
+function compareTwoIntegers(left: number, right: number): Result {
+  if (left < right) {
+    return 'correct'
+  } else if (right < left) {
+    return 'incorrect'
+  } else {
+    return 'next'
+  }
+}
+
+function compareTwoLists(left: Packet[], right: Packet[]): Result {
+  let result: Result = 'next'
+  while (left.length > 0 && right.length > 0 && result === 'next') {
+    const leftChild = left.shift()!
+    const rightChild = right.shift()!
+    result = compare(leftChild, rightChild)
+  }
+  if (result === 'next') {
+    if (left.length === 0 && right.length > 0) {
+      return 'correct'
+    } else if (right.length === 0 && left.length > 0) {
+      return 'incorrect'
+    } else {
+      return result
+    }
+  } else {
+    return result
+  }
 }
