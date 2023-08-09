@@ -7,7 +7,7 @@ type Result = 'correct' | 'incorrect' | 'next'
 const input: Packet[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day13Input.txt')
+  const lines = getInputFromFile('./inputfiles/day13ExampleInput.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -22,11 +22,13 @@ try {
 }
 
 export function sumCorrectlySentPacketIndices() {
+  const newInput = structuredClone(input)
   const results: Result[] = []
-  while (input.length > 0) {
-    const left = input.shift()!
-    const right = input.shift()!
-    input.shift() // get rid of empty array line
+  while (newInput.length > 0) {
+    const left = newInput.shift()!
+    const right = newInput.shift()!
+
+    newInput.shift() // get rid of empty array line
     results.push(compare(left, right))
   }
   return results.reduce(
@@ -34,6 +36,17 @@ export function sumCorrectlySentPacketIndices() {
     (acc, val, i) => (val === 'correct' ? acc + i + 1 : acc + 0),
     0,
   )
+}
+
+export function findDecoderKey() {
+  const newInput = structuredClone(input)
+  newInput.sort((a, b) => {
+    const result = compare(a, b)
+    if (result === 'correct') return -1
+    else return 1
+  })
+  // this doesn't work because I am mutating everything... wop wop wahhhhh ok I'll come back later
+  console.log(newInput)
 }
 
 function compare(left: Packet, right: Packet): Result {

@@ -4,7 +4,10 @@ import {
   findNiceHikingPath,
   findShortestDistance,
 } from './solutions/day12Solution'
-import { sumCorrectlySentPacketIndices } from './solutions/day13Solution'
+import {
+  findDecoderKey,
+  sumCorrectlySentPacketIndices,
+} from './solutions/day13Solution'
 import {
   findHighestCalorieTotal,
   findHighestThreeCalorieTotal,
@@ -97,3 +100,4 @@ console.log('Part 2:', findNiceHikingPath())
 console.log('')
 console.log('Day 13 Solution:')
 console.log('Part 1:', sumCorrectlySentPacketIndices())
+console.log('Part 2:', findDecoderKey())
