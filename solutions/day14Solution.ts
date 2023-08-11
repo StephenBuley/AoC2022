@@ -28,32 +28,42 @@ class Point {
 }
 
 export function simulateTurnsOfSand() {
+  const grid: Point[] = generateGrid(490, 0, 510, 15)
+  for (const row of rows) {
+    parseRow(row, grid)
+  }
+
+  console.log(grid.filter((val) => val.blocked))
+}
+
+function parseRow(row: string, grid: Point[]) {
+  const points = row.split(' -> ').map((str) => str.split(',').map(Number))
+  let currX = points[0][0]
+  let currY = points[0][1]
+  for (let i = 1; i < points.length; i++) {
+    const nextX = points[i][0]
+    const nextY = points[i][1]
+    if (currX === nextX) {
+      // Y is changing, so X will stay the same throughout
+      // loop through every point from points[currX][currY] to points[nextX][nextY] and change them to blocked
+      blockRocks('y', currY, nextY, currX, grid)
+    } else {
+      // X is changing, so Y will stay the same throughout
+      blockRocks('x', currX, nextX, currY, grid)
+    }
+    currX = nextX
+    currY = nextY
+  }
+}
+
+function generateGrid(x1: number, y1: number, x2: number, y2: number) {
   const grid: Point[] = []
-  for (let i = 490; i < 510; i++) {
-    for (let j = 0; j < 15; j++) {
+  for (let i = x1; i < x2; i++) {
+    for (let j = y1; j < y2; j++) {
       grid.push(new Point(i, j))
     }
   }
-  for (const row of rows) {
-    const points = row.split(' -> ').map((str) => str.split(',').map(Number))
-    let currX = points[0][0]
-    let currY = points[0][1]
-    for (let i = 1; i < points.length; i++) {
-      const nextX = points[i][0]
-      const nextY = points[i][1]
-      if (currX === nextX) {
-        // Y is changing, so X will stay the same throughout
-        // loop through every point from points[currX][currY] to points[nextX][nextY] and change them to blocked
-        blockRocks('y', currY, nextY, currX, grid)
-      } else {
-        // X is changing, so Y will stay the same throughout
-        blockRocks('x', currX, nextX, currY, grid)
-      }
-      currX = nextX
-      currY = nextY
-    }
-  }
-  console.log(grid.filter((val) => val.blocked))
+  return grid
 }
 
 function blockRocks(
