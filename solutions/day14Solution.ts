@@ -30,10 +30,21 @@ class Point {
 export function simulateTurnsOfSand() {
   const grid: Point[] = generateGrid(490, 0, 510, 15)
   for (const row of rows) {
+    // parse the row and generate the corresponding rock formation
     parseRow(row, grid)
   }
 
-  console.log(grid.filter((val) => val.blocked))
+  /* 
+  sand will be falling from 500, 0
+  while (sand not falling into the abyss) {
+    while (sand not at rest) {
+      check if the sand can move straight down
+      check if the sand can move down and to the left
+      check if the sand can move down and to the right
+      if none of those, sand is now at rest, generate new sand somewhere
+    }
+  }
+  */
 }
 
 function parseRow(row: string, grid: Point[]) {
