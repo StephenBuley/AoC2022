@@ -3,7 +3,7 @@ import { getInputFromFile } from '../utils/getInputFromFile'
 const rows: string[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day14ExampleInput.txt')
+  const lines = getInputFromFile('./inputfiles/day14Input.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -20,6 +20,7 @@ class Point {
   x: number
   y: number
   blocked: boolean = false
+  isSand: boolean = false
 
   constructor(x: number, y: number) {
     this.x = x
@@ -28,23 +29,58 @@ class Point {
 }
 
 export function simulateTurnsOfSand() {
-  const grid: Point[] = generateGrid(490, 0, 510, 15)
+  const grid: Point[] = generateGrid(300, 0, 700, 200)
   for (const row of rows) {
     // parse the row and generate the corresponding rock formation
     parseRow(row, grid)
   }
-
-  /* 
-  sand will be falling from 500, 0
-  while (sand not falling into the abyss) {
-    while (sand not at rest) {
-      check if the sand can move straight down
-      check if the sand can move down and to the left
-      check if the sand can move down and to the right
-      if none of those, sand is now at rest, generate new sand somewhere
+  let sandX = 500
+  let sandY = 0
+  let sandInAbyss = false
+  while (!sandInAbyss) {
+    if (downIsBlocked(sandX, sandY, grid) === undefined) {
+      sandInAbyss = true
+    } else if (!downIsBlocked(sandX, sandY, grid)) {
+      sandY += 1
+    } else if (!downLeftIsBlocked(sandX, sandY, grid)) {
+      sandX -= 1
+      sandY += 1
+    } else if (!downRightIsBlocked(sandX, sandY, grid)) {
+      sandX += 1
+      sandY += 1
+    } else {
+      // sand comes to rest
+      const thisPoint = grid.find(
+        (point) => point.x === sandX && point.y === sandY,
+      )!
+      thisPoint.isSand = true
+      thisPoint.blocked = true
+      sandX = 500
+      sandY = 0
     }
   }
-  */
+  return grid.filter((point) => point.isSand).length
+}
+
+function downIsBlocked(sandX: number, sandY: number, grid: Point[]) {
+  const nextPoint = grid.find(
+    (point) => point.x === sandX && point.y === sandY + 1,
+  )
+  return nextPoint?.blocked
+}
+
+function downLeftIsBlocked(sandX: number, sandY: number, grid: Point[]) {
+  const nextPoint = grid.find(
+    (point) => point.x === sandX - 1 && point.y === sandY + 1,
+  )
+  return nextPoint?.blocked
+}
+
+function downRightIsBlocked(sandX: number, sandY: number, grid: Point[]) {
+  const nextPoint = grid.find(
+    (point) => point.x === sandX + 1 && point.y === sandY + 1,
+  )
+  return nextPoint?.blocked
 }
 
 function parseRow(row: string, grid: Point[]) {
