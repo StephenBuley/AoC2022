@@ -8,7 +8,10 @@ import {
   findDecoderKey,
   sumCorrectlySentPacketIndices,
 } from './solutions/day13Solution'
-import { simulateTurnsOfSand } from './solutions/day14Solution'
+import {
+  simulateTurnsOfSand,
+  simulateTurnsOfSandToEnd,
+} from './solutions/day14Solution'
 import {
   findHighestCalorieTotal,
   findHighestThreeCalorieTotal,
@@ -106,3 +109,4 @@ console.log('Part 2:', findDecoderKey())
 console.log('')
 console.log('Day 14 Solution:')
 console.log('Part 1:', simulateTurnsOfSand())
+console.log('Part 2:', simulateTurnsOfSandToEnd())

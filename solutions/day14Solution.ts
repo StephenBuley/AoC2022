@@ -29,18 +29,18 @@ class Point {
 }
 
 export function simulateTurnsOfSand() {
-  const grid: Point[] = generateGrid(300, 0, 700, 200)
+  const height = findHeight(rows)
+
+  const grid: Point[] = generateGrid(500 - height, 0, 500 + height, height)
   for (const row of rows) {
     // parse the row and generate the corresponding rock formation
     parseRow(row, grid)
   }
   let sandX = 500
   let sandY = 0
-  let sandInAbyss = false
-  while (!sandInAbyss) {
-    if (downIsBlocked(sandX, sandY, grid) === undefined) {
-      sandInAbyss = true
-    } else if (!downIsBlocked(sandX, sandY, grid)) {
+
+  while (sandY < height - 1) {
+    if (!downIsBlocked(sandX, sandY, grid)) {
       sandY += 1
     } else if (!downLeftIsBlocked(sandX, sandY, grid)) {
       sandX -= 1
@@ -62,10 +62,64 @@ export function simulateTurnsOfSand() {
   return grid.filter((point) => point.isSand).length
 }
 
+export function simulateTurnsOfSandToEnd() {
+  const height = findHeight(rows)
+
+  const grid: Point[] = generateGrid(500 - height, 0, 500 + height, height)
+  for (const row of rows) {
+    // parse the row and generate the corresponding rock formation
+    parseRow(row, grid)
+  }
+  let sandX = 500
+  let sandY = 0
+  const stoppingPoint = grid.find((point) => point.x === 500 && point.y === 0)
+  let counter = 0
+
+  while (!stoppingPoint?.blocked) {
+    if (!downIsBlocked(sandX, sandY, grid)) {
+      sandY += 1
+    } else if (!downLeftIsBlocked(sandX, sandY, grid)) {
+      sandX -= 1
+      sandY += 1
+    } else if (!downRightIsBlocked(sandX, sandY, grid)) {
+      sandX += 1
+      sandY += 1
+    } else {
+      // sand comes to rest
+      const thisPoint = grid.find(
+        (point) => point.x === sandX && point.y === sandY,
+      )!
+      thisPoint.isSand = true
+      thisPoint.blocked = true
+
+      counter++
+      console.log(counter)
+      sandX = 500
+      sandY = 0
+    }
+  }
+  return counter
+}
+
+function findHeight(arr: string[]) {
+  let maxHeight = 0
+  arr.forEach((line) => {
+    const points = line.split(' -> ').map((str) => str.split(',').map(Number))
+    points.forEach((point) => {
+      if (point[1] > maxHeight) {
+        maxHeight = point[1]
+      }
+    })
+  })
+
+  return maxHeight + 2
+}
+
 function downIsBlocked(sandX: number, sandY: number, grid: Point[]) {
   const nextPoint = grid.find(
     (point) => point.x === sandX && point.y === sandY + 1,
   )
+  if (nextPoint === undefined) return true
   return nextPoint?.blocked
 }
 
@@ -73,6 +127,7 @@ function downLeftIsBlocked(sandX: number, sandY: number, grid: Point[]) {
   const nextPoint = grid.find(
     (point) => point.x === sandX - 1 && point.y === sandY + 1,
   )
+  if (nextPoint === undefined) return true
   return nextPoint?.blocked
 }
 
@@ -80,6 +135,7 @@ function downRightIsBlocked(sandX: number, sandY: number, grid: Point[]) {
   const nextPoint = grid.find(
     (point) => point.x === sandX + 1 && point.y === sandY + 1,
   )
+  if (nextPoint === undefined) return true
   return nextPoint?.blocked
 }
 
