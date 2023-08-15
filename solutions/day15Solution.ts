@@ -71,18 +71,23 @@ export function determineBeaconPlacement() {
   }
 
   const grid: string[][] = []
+  const offsetX = 0 - lowestX
+  const offsetY = 0 - lowestY
   for (let i = lowestY; i <= highestY; i++) {
-    grid[i] = []
+    grid[i + offsetY] = []
     for (let j = lowestX; j <= highestX; j++) {
-      grid[i][j] = '.'
+      grid[i + offsetY][j + offsetX] = '.'
     }
   }
   for (const sensor of sensors) {
-    grid[sensor.y][sensor.x] = sensor.value
+    grid[sensor.y + offsetY][sensor.x + offsetX] = sensor.value
   }
   for (const beacon of beacons) {
-    grid[beacon.y][beacon.x] = beacon.value
+    grid[beacon.y + offsetY][beacon.x + offsetX] = beacon.value
   }
+
+  const drawnGrid = grid.map((row) => row.join('')).join('\n')
+  console.log(drawnGrid)
 }
 
 function getManhattanDistance(x1: number, y1: number, x2: number, y2: number) {
