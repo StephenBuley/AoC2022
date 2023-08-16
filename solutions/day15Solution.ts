@@ -3,7 +3,7 @@ import { getInputFromFile } from '../utils/getInputFromFile'
 const rows: string[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day15ExampleInput.txt')
+  const lines = getInputFromFile('./inputfiles/day15Input.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -45,7 +45,7 @@ class Sensor extends Point {
   }
 }
 
-export function determineBeaconPlacement() {
+export function numSpotsBeaconCantBeInRow(rowNum: number) {
   /* 
   what we want is I guess a grid of some sort, where we know where each beacon is, each sensor is, and its area of effect
     then just count the unaffected areas? 
@@ -86,8 +86,36 @@ export function determineBeaconPlacement() {
     grid[beacon.y + offsetY][beacon.x + offsetX] = beacon.value
   }
 
-  const drawnGrid = grid.map((row) => row.join('')).join('\n')
-  console.log(drawnGrid)
+  for (const sensor of sensors) {
+    // for each sensor, we want to change every thing within the distance that is not a beacon into a #
+    for (let i = 0; i <= highestY + offsetY; i++) {
+      for (let j = 0; j <= highestX + offsetX; j++) {
+        if (mustNotBeBeacon(grid, i, j, sensor, offsetX, offsetY)) {
+          grid[i][j] = '#'
+        }
+      }
+    }
+  }
+
+  return grid[rowNum + offsetY].reduce(
+    (sum, val) => (val === '#' ? sum + 1 : sum),
+    0,
+  )
+}
+
+function mustNotBeBeacon(
+  grid: string[][],
+  i: number,
+  j: number,
+  sensor: Sensor,
+  offsetX: number,
+  offsetY: number,
+) {
+  const dist = sensor.distance
+  return (
+    getManhattanDistance(j, i, sensor.x + offsetX, sensor.y + offsetY) <=
+      dist && grid[i][j] !== 'B'
+  )
 }
 
 function getManhattanDistance(x1: number, y1: number, x2: number, y2: number) {
