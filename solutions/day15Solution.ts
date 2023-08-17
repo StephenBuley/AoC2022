@@ -3,7 +3,7 @@ import { getInputFromFile } from '../utils/getInputFromFile'
 const rows: string[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day15Input.txt')
+  const lines = getInputFromFile('./inputfiles/day15ExampleInput.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -49,7 +49,17 @@ export function numSpotsBeaconCantBeInRow(rowNum: number) {
   /* 
   what we want is I guess a grid of some sort, where we know where each beacon is, each sensor is, and its area of effect
     then just count the unaffected areas? 
+
+  Ok the grid thing didn't work => 
+    Maybe now I have to specifically look at just the line in question
+      How many sensors will intersect with the line, and where will they intersect it
+      
+      Check each sensor to see if it's distance is within range of the line in question
+      if it is - determine how many and which coordinates it will affect by detonating
+
+      maybe my array is not for each point, but instad some kind of determination of how many in a row are the same (blocked, unblocked or whatever)
   */
+
   let lowestX = 199999990
   let highestX = 0
   let lowestY = 199999990
