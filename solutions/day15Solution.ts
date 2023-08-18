@@ -3,7 +3,7 @@ import { getInputFromFile } from '../utils/getInputFromFile'
 const rows: string[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day15ExampleInput.txt')
+  const lines = getInputFromFile('./inputfiles/day15Input.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -45,6 +45,8 @@ class Sensor extends Point {
   }
 }
 
+type Interval = [number, number]
+
 export function numSpotsBeaconCantBeInRow(rowNum: number) {
   /* 
   what we want is I guess a grid of some sort, where we know where each beacon is, each sensor is, and its area of effect
@@ -59,19 +61,10 @@ export function numSpotsBeaconCantBeInRow(rowNum: number) {
 
       maybe my array is not for each point, but instad some kind of determination of how many in a row are the same (blocked, unblocked or whatever)
   */
-
-  let lowestX = 199999990
-  let highestX = 0
-  let lowestY = 199999990
-  let highestY = 0
   const sensors: Sensor[] = []
   const beacons: Beacon[] = []
   for (const row of rows) {
     const [x1, y1, x2, y2] = getCoords(row)
-    lowestX = Math.min(lowestX, x1, x2)
-    highestX = Math.max(highestX, x1, x2)
-    lowestY = Math.min(lowestY, y1, y2)
-    highestY = Math.max(highestY, y1, y2)
     const distance = getManhattanDistance(x1, y1, x2, y2)
     sensors.push(new Sensor(x1, y1, distance))
 
@@ -79,53 +72,43 @@ export function numSpotsBeaconCantBeInRow(rowNum: number) {
       beacons.push(new Beacon(x2, y2))
     }
   }
+  // look through each sensor and determine how far they are from the row number
 
-  const grid: string[][] = []
-  const offsetX = 0 - lowestX
-  const offsetY = 0 - lowestY
-  for (let i = lowestY; i <= highestY; i++) {
-    grid[i + offsetY] = []
-    for (let j = lowestX; j <= highestX; j++) {
-      grid[i + offsetY][j + offsetX] = '.'
+  const intervals: Interval[] = [] // [[1, 3], [2, 4]] => [[1, 4]]
+  for (const sensor of sensors) {
+    const distanceFromRow = getManhattanDistance(
+      sensor.x,
+      sensor.y,
+      sensor.x,
+      rowNum,
+    )
+    if (distanceFromRow <= sensor.distance) {
+      // this sensor intersects with the row at at least one point, probably more.
+      const first = sensor.x - (sensor.distance - distanceFromRow)
+      const second = sensor.x + (sensor.distance - distanceFromRow)
+      intervals.push([first, second])
     }
   }
-  for (const sensor of sensors) {
-    grid[sensor.y + offsetY][sensor.x + offsetX] = sensor.value
-  }
-  for (const beacon of beacons) {
-    grid[beacon.y + offsetY][beacon.x + offsetX] = beacon.value
-  }
-
-  for (const sensor of sensors) {
-    // for each sensor, we want to change every thing within the distance that is not a beacon into a #
-    for (let i = 0; i <= highestY + offsetY; i++) {
-      for (let j = 0; j <= highestX + offsetX; j++) {
-        if (mustNotBeBeacon(grid, i, j, sensor, offsetX, offsetY)) {
-          grid[i][j] = '#'
-        }
-      }
+  // go through the intervals, and figure out where all of them are(?)
+  intervals.sort((a, b) => (a[0] - b[0] === 0 ? a[1] - b[1] : a[0] - b[0]))
+  let sum = 0
+  let lastEnd = -Infinity
+  // we have a sum
+  // start at the beginning
+  // look at the interval for start and end
+  // if the start of the interval is less than the last end
+  // the new start should be the last end + 1
+  for (let i = 0; i < intervals.length; i++) {
+    const start = Math.max(lastEnd + 1, intervals[i][0])
+    for (let j = start; j <= intervals[i][1]; j++) {
+      sum++
     }
+    lastEnd = Math.max(lastEnd, intervals[i][1])
   }
 
-  return grid[rowNum + offsetY].reduce(
-    (sum, val) => (val === '#' ? sum + 1 : sum),
-    0,
-  )
-}
+  const beaconsInRow = beacons.filter((beacon) => beacon.y === rowNum).length
 
-function mustNotBeBeacon(
-  grid: string[][],
-  i: number,
-  j: number,
-  sensor: Sensor,
-  offsetX: number,
-  offsetY: number,
-) {
-  const dist = sensor.distance
-  return (
-    getManhattanDistance(j, i, sensor.x + offsetX, sensor.y + offsetY) <=
-      dist && grid[i][j] !== 'B'
-  )
+  return sum - beaconsInRow
 }
 
 function getManhattanDistance(x1: number, y1: number, x2: number, y2: number) {
