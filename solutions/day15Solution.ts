@@ -111,6 +111,15 @@ export function numSpotsBeaconCantBeInRow(rowNum: number) {
   return sum - beaconsInRow
 }
 
+export function findBeaconNotWithinAnyRanges() {
+  // for each sensor in sensors
+  // march around the border of it's manhattan distance
+  // if that point is within 0,0, 4000000, 4000000
+  // check if it is within range of any other sensor
+  // if it is, move on
+  // if it isnt, do the weird calculation an return it
+}
+
 function getManhattanDistance(x1: number, y1: number, x2: number, y2: number) {
   return Math.abs(x1 - x2) + Math.abs(y1 - y2)
 }
