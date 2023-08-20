@@ -3,7 +3,7 @@ import { getInputFromFile } from '../utils/getInputFromFile'
 const rows: string[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day15Input.txt')
+  const lines = getInputFromFile('./inputfiles/day15ExampleInput.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -61,18 +61,9 @@ export function numSpotsBeaconCantBeInRow(rowNum: number) {
 
       maybe my array is not for each point, but instad some kind of determination of how many in a row are the same (blocked, unblocked or whatever)
   */
-  const sensors: Sensor[] = []
-  const beacons: Beacon[] = []
-  for (const row of rows) {
-    const [x1, y1, x2, y2] = getCoords(row)
-    const distance = getManhattanDistance(x1, y1, x2, y2)
-    sensors.push(new Sensor(x1, y1, distance))
 
-    if (!beacons.find((beacon) => beacon.x == x2 && beacon.y == y2)) {
-      beacons.push(new Beacon(x2, y2))
-    }
-  }
   // look through each sensor and determine how far they are from the row number
+  const { sensors, beacons } = parseInput(rows)
 
   const intervals: Interval[] = [] // [[1, 3], [2, 4]] => [[1, 4]]
   for (const sensor of sensors) {
@@ -112,12 +103,47 @@ export function numSpotsBeaconCantBeInRow(rowNum: number) {
 }
 
 export function findBeaconNotWithinAnyRanges() {
-  // for each sensor in sensors
   // march around the border of it's manhattan distance
   // if that point is within 0,0, 4000000, 4000000
   // check if it is within range of any other sensor
   // if it is, move on
   // if it isnt, do the weird calculation an return it
+  const { sensors, beacons } = parseInput(rows)
+  for (const sensor of sensors) {
+    console.log(sensor)
+    for (let i = 0; i <= sensor.distance; i++) {
+      const northEastY = sensor.y - (sensor.distance + 1) + i
+      const northEastX = sensor.x + i
+      const southEastY = sensor.y + i
+      const southEastX = sensor.x + (sensor.distance + 1) - i
+      const southWestY = sensor.y + (sensor.distance + 1) - i
+      const southWestX = sensor.x - i
+      const northWestY = sensor.y - i
+      const northWestX = sensor.x - (sensor.distance + 1) + i
+      if (inBounds(northEastX, northEastY)) {
+      } else if (inBounds(southEastX, southEastY)) {
+      } else if (inBounds(southWestX, southWestY)) {
+      } else if (inBounds(northWestX, northWestY)) {
+      }
+
+      console.log(sensor.y - i, sensor.x - (sensor.distance + 1) + i)
+    }
+  }
+}
+
+function parseInput(rows: string[]) {
+  const sensors: Sensor[] = []
+  const beacons: Beacon[] = []
+  for (const row of rows) {
+    const [x1, y1, x2, y2] = getCoords(row)
+    const distance = getManhattanDistance(x1, y1, x2, y2)
+    sensors.push(new Sensor(x1, y1, distance))
+
+    if (!beacons.find((beacon) => beacon.x == x2 && beacon.y == y2)) {
+      beacons.push(new Beacon(x2, y2))
+    }
+  }
+  return { sensors, beacons }
 }
 
 function getManhattanDistance(x1: number, y1: number, x2: number, y2: number) {
@@ -129,4 +155,8 @@ function getCoords(row: string) {
     .split(/Sensor at x=|, y=|: closest beacon is at x=/)
     .slice(1)
     .map(Number)
+}
+
+function inBounds(currX: number, currY: number) {
+  return currX >= 0 && currX <= 4000000 && currY >= 0 && currY <= 4000000
 }

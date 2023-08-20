@@ -117,5 +117,5 @@ import { findTailPositions } from './solutions/day9Solution'
 
 console.log('')
 console.log('Day 15 Solution:')
-console.log('Part 1: ', numSpotsBeaconCantBeInRow(2000000))
+console.log('Part 1: ', numSpotsBeaconCantBeInRow(10))
 console.log('Part 2: ', findBeaconNotWithinAnyRanges())
