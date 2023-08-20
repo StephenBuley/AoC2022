@@ -3,7 +3,7 @@ import { getInputFromFile } from '../utils/getInputFromFile'
 const rows: string[] = []
 
 try {
-  const lines = getInputFromFile('./inputfiles/day15ExampleInput.txt')
+  const lines = getInputFromFile('./inputfiles/day15Input.txt')
 
   if (lines instanceof Error) {
     throw new Error('something bad happened')
@@ -112,6 +112,7 @@ export function findBeaconNotWithinAnyRanges() {
   for (const sensor of sensors) {
     console.log(sensor)
     for (let i = 0; i <= sensor.distance; i++) {
+      // define the coordinates that we are looking at for each round
       const northEastY = sensor.y - (sensor.distance + 1) + i
       const northEastX = sensor.x + i
       const southEastY = sensor.y + i
@@ -120,13 +121,76 @@ export function findBeaconNotWithinAnyRanges() {
       const southWestX = sensor.x - i
       const northWestY = sensor.y - i
       const northWestX = sensor.x - (sensor.distance + 1) + i
+      // look at each coordinate and decide if it is within manhattan distance of another sensor
       if (inBounds(northEastX, northEastY)) {
+        let found = false
+        for (const otherSensor of sensors) {
+          const distanceToSensor = getManhattanDistance(
+            otherSensor.x,
+            otherSensor.y,
+            northEastX,
+            northEastY,
+          )
+          if (distanceToSensor <= otherSensor.distance) {
+            // stop checking and move on
+            found = true
+            break
+          }
+        }
+        if (found) continue
+        return 4000000 * northEastX + northEastY
       } else if (inBounds(southEastX, southEastY)) {
+        let found = false
+        for (const otherSensor of sensors) {
+          const distanceToSensor = getManhattanDistance(
+            otherSensor.x,
+            otherSensor.y,
+            southEastX,
+            southEastY,
+          )
+          if (distanceToSensor <= otherSensor.distance) {
+            // stop checking and move on
+            found = true
+            break
+          }
+        }
+        if (found) continue
+        return 4000000 * southEastX + southEastY
       } else if (inBounds(southWestX, southWestY)) {
+        let found = false
+        for (const otherSensor of sensors) {
+          const distanceToSensor = getManhattanDistance(
+            otherSensor.x,
+            otherSensor.y,
+            southWestX,
+            southWestY,
+          )
+          if (distanceToSensor <= otherSensor.distance) {
+            // stop checking and move on
+            found = true
+            break
+          }
+        }
+        if (found) continue
+        return 4000000 * southWestX + southWestY
       } else if (inBounds(northWestX, northWestY)) {
+        let found = false
+        for (const otherSensor of sensors) {
+          const distanceToSensor = getManhattanDistance(
+            otherSensor.x,
+            otherSensor.y,
+            northWestX,
+            northWestY,
+          )
+          if (distanceToSensor <= otherSensor.distance) {
+            // stop checking and move on
+            found = true
+            break
+          }
+        }
+        if (found) continue
+        return 4000000 * northWestX + northWestY
       }
-
-      console.log(sensor.y - i, sensor.x - (sensor.distance + 1) + i)
     }
   }
 }
