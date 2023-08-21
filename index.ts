@@ -16,6 +16,7 @@ import {
   findBeaconNotWithinAnyRanges,
   numSpotsBeaconCantBeInRow,
 } from './solutions/day15Solution'
+import { depressurize } from './solutions/day16Solution'
 import {
   findHighestCalorieTotal,
   findHighestThreeCalorieTotal,
@@ -115,7 +116,12 @@ import { findTailPositions } from './solutions/day9Solution'
 // console.log('Part 1:', simulateTurnsOfSand())
 // console.log('Part 2:', simulateTurnsOfSandToEnd())
 
+// console.log('')
+// console.log('Day 15 Solution:')
+// console.log('Part 1: ', numSpotsBeaconCantBeInRow(2000000))
+// console.log('Part 2: ', findBeaconNotWithinAnyRanges())
+
 console.log('')
-console.log('Day 15 Solution:')
-console.log('Part 1: ', numSpotsBeaconCantBeInRow(2000000))
-console.log('Part 2: ', findBeaconNotWithinAnyRanges())
+console.log('Day 16 Solution:')
+console.log('Part 1: ', depressurize())
+console.log('Part 2: ')
