@@ -22,6 +22,7 @@ class Valve {
   tunnels: string[]
   distance: number = Infinity
   visited: boolean = false
+  isOpen: boolean = false
 
   constructor(name: string, flowRate: number, ...tunnels: string[]) {
     this.name = name

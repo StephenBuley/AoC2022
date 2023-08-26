@@ -22,7 +22,7 @@
   "homepage": "https://github.com/StephenBuley/AoC2022#readme",
   "devDependencies": {
     "@types/node": "^20.2.5",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.0.1",
     "tsc": "^2.0.4"
   },
   "dependencies": {
